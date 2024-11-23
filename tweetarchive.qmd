@@ -37,7 +37,11 @@ Remove retweets and select relevant columns
 #| label: noRT
 isrt = grepl("^RT", tweets$tweet.full_text)
 table(isrt)
-out = dplyr::select(tweets[!isrt, ], all_of(c(date = "tweet.created_at", text = "tweet.full_text", id = "tweet.id", mediadf = "tweet.entities.media")))
+out = dplyr::select(tweets[!isrt, ], all_of(c(
+  date = "tweet.created_at", 
+  text = "tweet.full_text", 
+  id = "tweet.id", 
+  mediadf = "tweet.entities.media")))
 ```
 
 Some cleanup and prettification. The `gsub` deals with linefeed (\\n) characters, and we add hyperlinks to URLs 
@@ -47,43 +51,50 @@ Some cleanup and prettification. The `gsub` deals with linefeed (\\n) characters
 out = mutate(out, 
     text = gsub("\\n", "<br>", text) |>
            str_replace_all("(https?://\\S+)", "<a href='\\1'>\\1</a>"),
-    id = sprintf('<a href="https://x.com/wolfgangkhuber/status/%s">%s</a>', id, id),
+    idhtml = sprintf('<a href="https://x.com/wolfgangkhuber/status/%s">%s</a>', id, id),
     date = strptime(out$date, "%a %b %d %H:%M:%S %z %Y", tz = "UTC")
-)
+) |>
+  arrange(date)
 ```
 
 Deal with media
 ```{r}
 #| label: media
-mediafiles = dir(file.path(archivepath, "tweets_media"))
+indir  = file.path(archivepath, "tweets_media")
+outdir = "media"
+mediafiles = dir(indir)
 out$media = character(nrow(out))
+
+if (file.exists(outdir))
+     unlink(outdir, recursive = TRUE)
+dir.create(outdir)
+
 for (i in seq_len(nrow(out))) {
   m = out$mediadf[[i]]
   if (!is.null(m)) {
     stopifnot(is.data.frame(m), nrow(m) == 1)
     key = tools::file_path_sans_ext(basename(m$media_url))
-    w = grep(key, mediafiles)
-    if (length(w) == 0) {
+    im = grep(key, mediafiles)
+    ip = grep(paste0("^", out$id[i]), mediafiles)
+    if (length(ip) == 0) {
       message(sprintf("%s from tweet #%d not found",  key, i))
     } else {
-      stopifnot(length(w) == 1)
-      browser()
+      stopifnot(im %in% ip)
+      file.copy(file.path(indir, mediafiles[ip]), outdir)
+      out$media[i] = paste(
+        "::: {.tweet-media}",
+        paste(sprintf('![](%s){.lightbox .resized-image}', file.path(outdir, mediafiles[ip])), collapse = "\n"),
+        ":::", sep = "\n") 
     }
   }
 }
 ```
 
-::: {.tweet-media}
-    <img src="photo1.jpg" alt="Photo 1">
-    <img src="photo2.jpg" alt="Photo 2">
-    <img src="photo3.jpg" alt="Photo 3">
-::: 
 
 ```{r}
 #| label: tweets
 #| output: "asis"
-out = out[1:2, ]
-tweets = sprintf(
+tweets = with(out, sprintf(
 '::: {.tweet}
 ::: {.tweet-header}
 <span class="tweet-timestamp">%s</span>
@@ -94,13 +105,8 @@ tweets = sprintf(
 :::  
 %s
 :::
-', as.character(out$date), out$id, out$text, out$media
-)
+', as.character(date), idhtml, text, media
+))
 cat(tweets, "\n", sep = "")
 ```
 
-```{r}
-#| label: createHTML
-#| eval: false
-kable(select(out, !mediadf)[1:100,], row.names = FALSE) 
-```

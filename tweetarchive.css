@@ -6,7 +6,7 @@
   margin: 16px auto;
   max-width: 1000px;
   font-family: Arial, sans-serif;
-  background-color: #ffffff;
+  background-color: #f0f0f0;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -41,7 +41,7 @@
 
 .tweet-timestamp {
   font-size: 12px;
-  color: #aab8c2;
+  color: #14171a;
   margin-left: auto;
 }
 
@@ -87,4 +87,8 @@
 
 .tweet-actions button:hover {
   text-decoration: underline;
+}
+
+.resized-image {
+  max-width: 200px;
 }
