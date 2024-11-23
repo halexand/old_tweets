@@ -1,9 +1,14 @@
 ---
 title: "My tweets from 2015-24"
 author: "Wolfgang Huber"
-format: html
+date: "`r date()`"
+format:
+  html:
+    embed-resources: false
+    page-layout: full
+    toc: false
+    css: tweetarchive.css
 ---
-
 ```{r}
 #| label: pkgs
 #| message: false
@@ -19,8 +24,9 @@ The file data/tweets.js is in the Twitter archive (zip file) that I downloaded f
 #| label: fromjson
 #| cache: true
 #| warning: false
+archivepath = "/Users/whuber/twitter/data" 
 tweets = 
-  readLines("/Users/whuber/twitter/data/tweets.js") |>
+  readLines(file.path(archivepath, "tweets.js")) |>
     sub("^window.YTD.tweets.part0 = ", "", x = _) |>
     fromJSON(flatten = TRUE) 
 ```
@@ -49,11 +55,52 @@ out = mutate(out,
 Deal with media
 ```{r}
 #| label: media
-sapply(out$mediadf, function(x) if (is.null(x)) 0 else nrow(x)) |> table()
-out$mediatab = character(nrow(out))
+mediafiles = dir(file.path(archivepath, "tweets_media"))
+out$media = character(nrow(out))
+for (i in seq_len(nrow(out))) {
+  m = out$mediadf[[i]]
+  if (!is.null(m)) {
+    stopifnot(is.data.frame(m), nrow(m) == 1)
+    key = tools::file_path_sans_ext(basename(m$media_url))
+    w = grep(key, mediafiles)
+    if (length(w) == 0) {
+      message(sprintf("%s from tweet #%d not found",  key, i))
+    } else {
+      stopifnot(length(w) == 1)
+      browser()
+    }
+  }
+}
+```
 
-````
+::: {.tweet-media}
+    <img src="photo1.jpg" alt="Photo 1">
+    <img src="photo2.jpg" alt="Photo 2">
+    <img src="photo3.jpg" alt="Photo 3">
+::: 
+
+```{r}
+#| label: tweets
+#| output: "asis"
+out = out[1:2, ]
+tweets = sprintf(
+'::: {.tweet}
+::: {.tweet-header}
+<span class="tweet-timestamp">%s</span>
+<span class="tweet-handle">%s</span>
+:::  
+::: {.tweet-content}
+%s
+:::  
+%s
+:::
+', as.character(out$date), out$id, out$text, out$media
+)
+cat(tweets, "\n", sep = "")
+```
+
 ```{r}
 #| label: createHTML
+#| eval: false
 kable(select(out, !mediadf)[1:100,], row.names = FALSE) 
 ```

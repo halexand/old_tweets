@@ -4,7 +4,7 @@
   border-radius: 8px;
   padding: 16px;
   margin: 16px auto;
-  max-width: 600px;
+  max-width: 1000px;
   font-family: Arial, sans-serif;
   background-color: #ffffff;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -14,7 +14,7 @@
 .tweet-header {
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 2px;
 }
 
 .tweet-avatar {
