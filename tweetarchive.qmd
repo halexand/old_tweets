@@ -1,0 +1,59 @@
+---
+title: "My tweets from 2015-24"
+author: "Wolfgang Huber"
+format: html
+---
+
+```{r}
+#| label: pkgs
+#| message: false
+library("jsonlite")
+library("dplyr")
+library("stringr")
+library("kableExtra")
+```
+
+The file data/tweets.js is in the Twitter archive (zip file) that I downloaded from X. Adapt path to whatever you have.
+
+```{r}
+#| label: fromjson
+#| cache: true
+#| warning: false
+tweets = 
+  readLines("/Users/whuber/twitter/data/tweets.js") |>
+    sub("^window.YTD.tweets.part0 = ", "", x = _) |>
+    fromJSON(flatten = TRUE) 
+```
+
+Remove retweets and select relevant columns
+
+```{r}
+#| label: noRT
+isrt = grepl("^RT", tweets$tweet.full_text)
+table(isrt)
+out = dplyr::select(tweets[!isrt, ], all_of(c(date = "tweet.created_at", text = "tweet.full_text", id = "tweet.id", mediadf = "tweet.entities.media")))
+```
+
+Some cleanup and prettification. The `gsub` deals with linefeed (\\n) characters, and we add hyperlinks to URLs 
+
+```{r}
+#| label: prettify
+out = mutate(out, 
+    text = gsub("\\n", "<br>", text) |>
+           str_replace_all("(https?://\\S+)", "<a href='\\1'>\\1</a>"),
+    id = sprintf('<a href="https://x.com/wolfgangkhuber/status/%s">%s</a>', id, id),
+    date = strptime(out$date, "%a %b %d %H:%M:%S %z %Y", tz = "UTC")
+)
+```
+
+Deal with media
+```{r}
+#| label: media
+sapply(out$mediadf, function(x) if (is.null(x)) 0 else nrow(x)) |> table()
+out$mediatab = character(nrow(out))
+
+````
+```{r}
+#| label: createHTML
+kable(select(out, !mediadf)[1:100,], row.names = FALSE) 
+```
