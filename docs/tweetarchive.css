@@ -1,0 +1,94 @@
+/* Container for the tweet (same as before) */
+.tweet {
+  border: 1px solid #e1e8ed;
+  border-radius: 8px;
+  padding: 16px;
+  margin: 16px auto;
+  max-width: 800px;
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* User information */
+.tweet-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2px;
+}
+
+.tweet-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-right: 12px;
+}
+
+.tweet-user {
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.tweet-name {
+  font-weight: bold;
+}
+
+.tweet-handle {
+  color: #657786;
+  font-size: 13px;
+  margin-left: 4px;
+}
+
+.tweet-timestamp {
+  font-size: 12px;
+  color: #14171a;
+  margin-left: auto;
+}
+
+/* Tweet content */
+.tweet-content {
+  font-size: 16px;
+  line-height: 1.5;
+  color: #14171a;
+  margin: 12px 0;
+}
+
+/* Media (embedded images) */
+.tweet-media {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 8px;
+  margin: 12px 0;
+  border-radius: 8px; /* Rounded corners for images */
+  overflow: hidden;
+}
+
+.tweet-media img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+/* Interaction buttons */
+.tweet-actions {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 12px;
+}
+
+.tweet-actions button {
+  background: none;
+  border: none;
+  color: #1da1f2;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.tweet-actions button:hover {
+  text-decoration: underline;
+}
+
+.resized-image {
+  max-width: 200px;
+}
