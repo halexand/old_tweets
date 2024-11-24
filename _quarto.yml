@@ -1,0 +1,15 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - tweetarchive.qmd
+
+website:
+  title: "Wolfgang Huber's Tweets 2015-2023"
+format:
+  html:
+    theme: cerulean
+    toc: false
+    embed-resources: false
+    page-layout: full
+    css: tweetarchive.css
