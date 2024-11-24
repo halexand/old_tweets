@@ -2,7 +2,7 @@ project:
   type: website
   output-dir: docs
   render:
-    - tweetarchive.qmd
+    - index.qmd
 
 website:
   title: "Wolfgang Huber's Tweets 2015-2023"
