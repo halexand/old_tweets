@@ -5,7 +5,13 @@ project:
     - index.qmd
 
 website:
-  title: "Wolfgang Huber's Tweets 2015-2023"
+  title: "Wolfgang Huber's tweets 2015-24"
+  navbar:
+    search: true
+    left:
+      - href: index.qmd
+        text: Home
+
 format:
   html:
     theme: cerulean

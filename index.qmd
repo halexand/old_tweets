@@ -1,10 +1,6 @@
----
-
----
-
 ::: {.callout-note collapse=true appearance="simple"}
 
-## Click here to see the R code for creating the below
+# Click here to see the R code for creating the below
 
 Repository with the source code: <https://github.com/wolfganghuber/tweets>
 
@@ -14,7 +10,6 @@ Repository with the source code: <https://github.com/wolfganghuber/tweets>
 library("jsonlite")
 library("dplyr")
 library("stringr")
-library("kableExtra")
 ```
 
 The file data/tweets.js is in the Twitter archive (zip file) that I downloaded from X. Adapt path to whatever you have.
@@ -24,8 +19,7 @@ The file data/tweets.js is in the Twitter archive (zip file) that I downloaded f
 #| cache: true
 #| warning: false
 archivepath = "/Users/whuber/twitter/data" 
-tweets = 
-  readLines(file.path(archivepath, "tweets.js")) |>
+tweets = readLines(file.path(archivepath, "tweets.js")) |>
     sub("^window.YTD.tweets.part0 = ", "", x = _) |>
     fromJSON(flatten = TRUE) 
 ```
@@ -35,30 +29,28 @@ Select tweets and select relevant columns. Here, I chose to drop all retweets an
 ```{r}
 #| label: noRT
 isrt = grepl("^RT", tweets$tweet.full_text)
-table(isrt)
 out = dplyr::select(tweets[!isrt, ], all_of(c(
   date = "tweet.created_at", 
   text = "tweet.full_text", 
   id = "tweet.id", 
   retweets = "tweet.retweet_count",
   likes = "tweet.favorite_count",
-  mediadf = "tweet.entities.media")))
+  mediadf = "tweet.entities.media")
+))
 ```
 
-Some cleanup and prettification. The `gsub` deals with linefeed (\\n) characters, and we add hyperlinks to URLs. 
+Some cleanup and prettification: add hyperlinks to URLs and tweet IDs, and sort by date (default: ascending). 
 
 ```{r}
 #| label: prettify
 out = mutate(out, 
-    text = gsub("\\n", "<br>", text) |>
-           str_replace_all("(https?://\\S+)", "<a href='\\1'>\\1</a>"),
+    text = str_replace_all(text, "(https?://\\S+)", "<a href='\\1'>\\1</a>"),
     idhtml = sprintf('<a href="https://x.com/wolfgangkhuber/status/%s">%s</a>', id, id),
     date = strptime(out$date, "%a %b %d %H:%M:%S %z %Y", tz = "UTC")
-) |>
-  arrange(date)
+) |> arrange(date)
 ```
 
-Deal with media.
+Deal with media. Tweets that have media associated (images, movies) come with a `data.frame` in the `tweet.entities.media` column. We also just go and find all media whose filename contains the tweet ID (see code for `ip` below) and check consistency.
 
 ```{r}
 #| label: media
@@ -92,10 +84,10 @@ for (i in seq_len(nrow(out))) {
 }
 ```
 
+Create the markdown text for each tweet. The main work here is done by the [CSS file](tweetarchive.css).
 
 ```{r}
 #| label: createtweets
-# out = out[sample(nrow(out), 100), ]  # for testing
 tweetsmd = with(out, sprintf(
 '::: {.tweet}
 ::: {.tweet-header}
@@ -110,6 +102,9 @@ tweetsmd = with(out, sprintf(
 ', as.character(date), retweets, likes, idhtml, text, media
 ))
 ```
+
+Inject into the document.
+
 ```{r}
 #| label: showtweetsmock
 #| eval: false
