@@ -5,7 +5,7 @@
 This R/Quarto script reads your tweet archive (as downloaded from X), extracts the tweet texts and 
 associated media (pictures, movies) and outputs them into a static webpage.
 
-See <https://wolfganghuber.github.io/tweets/> for an example.
+See [https://wolfganghuber.github.io/tweets/](https://wolfganghuber.github.io/tweets/index.html#638628214785613824) for an example.
 
 ## License
 License: LGPL (>= 3)
