@@ -89,7 +89,7 @@ Create the markdown text for each tweet. The main work here is done by the [CSS 
 ```{r}
 #| label: createtweets
 tweetsmd = with(out, sprintf(
-'::: {.tweet}
+'::: {#%s .tweet}
 ::: {.tweet-header}
 <span class="tweet-timestamp">%s Retweets: %s Likes: %s</span>
 <span class="tweet-handle">%s</span>
@@ -99,7 +99,7 @@ tweetsmd = with(out, sprintf(
 :::  
 %s
 :::
-', as.character(date), retweets, likes, idhtml, text, media
+', id, as.character(date), retweets, likes, idhtml, text, media
 ))
 ```
 
