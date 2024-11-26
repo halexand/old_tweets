@@ -1,12 +1,12 @@
 /* Container for the tweet (same as before) */
 .tweet {
-  border: 1px solid #e1e8ed;
+  border: 2px solid #e1e8ed;
   border-radius: 8px;
   padding: 16px;
   margin: 16px auto;
   max-width: 800px;
   font-family: Arial, sans-serif;
-  background-color: #f0f0f0;
+  background-color: #787878;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
@@ -90,5 +90,5 @@
 }
 
 .resized-image {
-  max-width: 200px;
+  max-width: 400px;
 }

@@ -2,7 +2,9 @@
 
 # Click here to see the R code for creating the below
 
-Repository with the source code: <https://github.com/wolfganghuber/tweets>
+Repository with the source code: <https://github.com/halexand/old_tweets>
+
+Forked from:  <https://github.com/wolfganghuber/tweets>
 
 ```{r}
 #| label: pkgs
@@ -18,7 +20,7 @@ The file data/tweets.js is in the Twitter archive (zip file) that I downloaded f
 #| label: fromjson
 #| cache: true
 #| warning: false
-archivepath = "/Users/whuber/twitter/data" 
+archivepath = "~/Downloads/twitter-2024-11-19-e227a8ec133c0c3f1e39968f6368f13714013f6080ab344aa62244569484b2bd/data" 
 tweets = readLines(file.path(archivepath, "tweets.js")) |>
     sub("^window.YTD.tweets.part0 = ", "", x = _) |>
     fromJSON(flatten = TRUE) 
@@ -73,7 +75,7 @@ for (i in seq_len(nrow(out))) {
     if (length(ip) == 0) {
       message(sprintf("%s from tweet #%d not found",  key, i))
     } else {
-      stopifnot(im %in% ip)
+      #stopifnot(im %in% ip)
       file.copy(file.path(indir, mediafiles[ip]), outdir)
       out$media[i] = paste(
         "::: {.tweet-media}",
@@ -108,7 +110,7 @@ Inject into the document.
 ```{r}
 #| label: showtweetsmock
 #| eval: false
-cat(tweetsmd, "\n", sep = "")
+cat(rev(tweetsmd), "\n", sep = "")
 ```
 ::: 
 
