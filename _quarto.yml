@@ -16,7 +16,7 @@ website:
 
 format:
   html:
-    theme: slate
+    theme: solar
     toc: false
     embed-resources: false
     page-layout: full
