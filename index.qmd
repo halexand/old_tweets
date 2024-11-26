@@ -1,3 +1,6 @@
+# A twitter archive of @nekton4plankton 
+![](twitter-screenshot.png)
+
 ::: {.callout-note collapse=true appearance="simple"}
 
 # Click here to see the R code for creating the below
@@ -47,9 +50,9 @@ Some cleanup and prettification: add hyperlinks to URLs and tweet IDs, and sort 
 #| label: prettify
 out = mutate(out, 
     text = str_replace_all(text, "(https?://\\S+)", "<a href='\\1'>\\1</a>"),
-    idhtml = sprintf('<a href="https://x.com/wolfgangkhuber/status/%s">%s</a>', id, id),
+    idhtml = sprintf('<a href="https://x.com/nekton4plankton/status/%s">%s</a>', id, id),
     date = strptime(out$date, "%a %b %d %H:%M:%S %z %Y", tz = "UTC")
-) |> arrange(date)
+) |> arrange(desc(date) )
 ```
 
 Deal with media. Tweets that have media associated (images, movies) come with a `data.frame` in the `tweet.entities.media` column. We also just go and find all media whose filename contains the tweet ID (see code for `ip` below) and check consistency.
@@ -110,7 +113,7 @@ Inject into the document.
 ```{r}
 #| label: showtweetsmock
 #| eval: false
-cat(rev(tweetsmd), "\n", sep = "")
+cat(tweetsmd, "\n", sep = "")
 ```
 ::: 
 
